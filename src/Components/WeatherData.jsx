@@ -31,7 +31,10 @@ const WeatherData = ({ weather, icons }) => {
     <div className="weather-info">
       <div className="col-1">
         <h1 className="location">{weather.name.toUpperCase()}</h1>
-        <p className="date">{localDate}</p>
+        <p className="date">
+          {localDate}
+          {}
+        </p>
         <p className="time">{localTime}</p>
       </div>
       <div className="col-2">

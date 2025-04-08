@@ -16,6 +16,7 @@ import mist_icon from "./assets/mist icon.png";
 function App() {
   const apiKey = "9bc82d6dbae467b3c6fdb0744a447dcd";
   const currentURL = "https://api.openweathermap.org/data/2.5/weather?q=";
+  const geoURL = "https://api.openweathermap.org/data/2.5/weather?";
   const forecastURL = "https://api.openweathermap.org/data/2.5/forecast/?";
   const [weatherData, setWeatherData] = useState(null);
   const [forecastWeather, setForecastWeather] = useState(null);
@@ -29,7 +30,30 @@ function App() {
     "50d": mist_icon,
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      Axios.get(
+        `${geoURL}lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+      ).then((res) => {
+        console.log(res.data);
+        setWeatherData(res.data);
+      });
+
+      Axios.get(
+        `${forecastURL}lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+      ).then((res) => {
+        console.log(res.data);
+        setForecastWeather(res.data);
+      });
+    }),
+      (error) => {
+        console.error("Location access denied or failed", error);
+        fetchApi("Stockholm");
+      };
+  }, []);
 
   const fetchApi = (city) => {
     Axios.get(`${currentURL}${city}&appid=${apiKey}&units=metric`).then(
