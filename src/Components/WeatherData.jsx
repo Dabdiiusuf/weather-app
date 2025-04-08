@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import sunny_icon from "../assets/sunny.png";
 import { FaWind, FaTemperatureHigh } from "react-icons/fa";
 import { WiHumidity } from "react-icons/wi";
 
-const WeatherData = ({ weather }) => {
+const WeatherData = ({ weather, icons }) => {
   if (!weather) return null;
+
+  const iconCode = weather.weather[0].icon;
+  const weatherIcon = icons[iconCode] || sunny_icon;
 
   const getLocalTime = () => {
     const utc = new Date().getTime() + new Date().getTimezoneOffset() * 60000;
@@ -13,15 +16,15 @@ const WeatherData = ({ weather }) => {
 
   const localDateTime = getLocalTime();
 
-  const localTime = localDateTime.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
   const localDate = localDateTime.toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
     day: "numeric",
+  });
+
+  const localTime = localDateTime.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
   return (
@@ -33,26 +36,26 @@ const WeatherData = ({ weather }) => {
       </div>
       <div className="col-2">
         <h1 className="temperature">{weather.main.temp.toFixed(1)}°C</h1>
-        <img src={sunny_icon} alt="" />
+        <img src={weatherIcon} />
       </div>
       <div className="col-3">
         <div className="box-1">
-          <p>Wind speed: {weather.wind.speed.toFixed(1)}km/h</p>
           <span>
             <FaWind />
           </span>
+          <p>Wind speed: {weather.wind.speed.toFixed(1)}km/h</p>
         </div>
         <div className="box-2">
-          <p>{weather.main.humidity}%</p>
           <span>
             <WiHumidity />
           </span>
+          <p>Humidity: {weather.main.humidity}%</p>
         </div>
         <div className="box-3">
-          <p>Feels like: {weather.main.feels_like.toFixed(1)}°C</p>
           <span>
             <FaTemperatureHigh />
           </span>
+          <p>Feels like: {weather.main.feels_like.toFixed(1)}°C</p>
         </div>
       </div>
     </div>
